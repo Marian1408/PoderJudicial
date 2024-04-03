@@ -1,61 +1,15 @@
-<?php
-include 'db.php';
-
-session_start();
-
-// Verificar si el usuario ha iniciado sesión
-if (!isset($_SESSION['user_id'])) {
-    // Redirigir a index.php si el usuario no ha iniciado sesión
-    header("Location: index.php");
-    exit();
-}
-
-$idUsuario = $_SESSION['user_id'];
-
-// Verificar el rol del usuario
-$queryRol = "SELECT id_rol FROM usuariosroles WHERE id_usuarios = '$idUsuario'";
-$resultRol = $conn->query($queryRol);
-
-if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
-    $idRol = $rowRol['id_rol'];
-
-    // Verificar si el usuario tiene un rol permitido (1 o 3)
-    if ($idRol != 1 && $idRol != 3) {
-        // Redirigir a una página de acceso no autorizado si el rol no es permitido
-        header("Location: acceso-no-autorizado.php");
-        exit();
-    }
-} else {
-    // Redirigir a una página de acceso no autorizado si no se puede obtener el rol
-    header("Location: acceso-no-autorizado.php");
-    exit();
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Generar Reporte</title>
+  <title>Asignar actividad</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="shortcut icon" href="logo.jpg"><!-- Font Awesome -->
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
-  <style>
-        <?php
-            // Lógica para ocultar elementos del menú según el rol
-            if ($idRol == 1) {
-                // Usuario de rol 1
-                echo '.nav-item-rol1 { display: none; }';
-            } elseif ($idRol == 2) {
-                // Usuario de rol 2
-                echo '.nav-item-rol2 { display: none; }';
-            }
-            ?>
-    </style>
 </head>
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->
@@ -103,23 +57,23 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Inicio -->
     <li class="nav-item">
-      <a href="inicio.php" class="nav-link">
+      <a href="inicio.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Inicio</p>
       </a>
     </li>
 
     <li class="nav-item nav-item-rol2">
-      <a href="generarReporte.php" class="nav-link">
+      <a href="generarReporte.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
-        <p>Generar Reporte</p>
+        <p>Asignar Actividad</p>
         <i class="right fas fa-angle-left"></i>
       </a>
     </li>
 
     <!-- Enlace Mis Reportes -->
     <li class="nav-item nav-item-rol1">
-      <a href="sistema.php" class="nav-link">
+      <a href="sistema.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Mis Reportes</p>
         <i class="right fas fa-angle-left"></i>
@@ -128,7 +82,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Técnico -->
     <li class="nav-item nav-item-rol1">
-      <a href="administrador.php" class="nav-link">
+      <a href="administrador.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Técnico</p>
         <i class="right fas fa-angle-left"></i>
@@ -137,7 +91,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Lista de Usuarios -->
     <li class="nav-item nav-item-rol2 nav-item-rol1">
-      <a href="usuarios.php" class="nav-link">
+      <a href="usuarios.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Lista de Usuarios</p>
         <i class="right fas fa-angle-left"></i>
@@ -146,7 +100,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Crear Usuarios -->
     <li class="nav-item nav-item-rol2 nav-item-rol1">
-      <a href="agregaUsuarios.php" class="nav-link">
+      <a href="agregaUsuarios.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Crear Usuarios</p>
         <i class="right fas fa-angle-left"></i>
@@ -155,7 +109,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Calendario -->
     <li class="nav-item">
-      <a href="calendario.php" class="nav-link">
+      <a href="calendario.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Eventos</p>
         <i class="right fas fa-angle-left"></i>
@@ -164,7 +118,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Cerrar Sesión -->
     <li class="nav-item">
-      <a href="cerrar_sesion.php" class="nav-link">
+      <a href="cerrar_sesion.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Cerrar sesión</p>
         <i class="right fas fa-angle-left"></i>
@@ -184,7 +138,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Generar Reporte</h1>
+            <h1>Asigna una nueva actividad</h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -200,7 +154,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
             </div>
             <div class="card-body">
-              <form action="guardarReporte.php" method="post" enctype="multipart/form-data">
+              <form action="guardarReporte.html" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                   <label for="inputDescription">Descripción del Reporte</label>
                   <textarea id="inputDescription" name="descripcion" class="form-control" rows="4" required></textarea>
@@ -244,7 +198,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
     <div class="float-right d-none d-sm-block">
       <b>Alumnos del Tecnólogico de Xalapa</b>
     </div>
-    <strong> <a href="index.php">Mesa De Ayuda</a></strong> 
+    <strong> <a href="index.html">Mesa De Ayuda</a></strong> 
   </footer>
 
   <!-- Control Sidebar -->

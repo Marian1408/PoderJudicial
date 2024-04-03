@@ -1,43 +1,3 @@
-<?php
-include 'db.php';
-
-session_start();
-
-// Inicializar $resultUsuarios
-$resultUsuarios = null;
-
-// Verificar si el usuario ha iniciado sesión
-if (!isset($_SESSION['user_id'])) {
-    // Redirigir a index.php si el usuario no ha iniciado sesión
-    header("Location: index.php");
-    exit();
-}
-
-$idUsuario = $_SESSION['user_id'];
-
-// Verificar el rol del usuario
-$queryRol = "SELECT id_rol FROM usuariosroles WHERE id_usuarios = '$idUsuario'";
-$resultRol = $conn->query($queryRol);
-
-if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
-    $idRol = $rowRol['id_rol'];
-
-    // Realizar la consulta SQL para obtener los usuarios
-    $queryUsuarios = "SELECT * FROM usuarios";
-    $resultUsuarios = $conn->query($queryUsuarios);
-    
-    if ($idRol != 3) {
-      // Redirigir a una página de acceso no autorizado si el rol no es permitido
-      header("Location: acceso-no-autorizado.php");
-      exit();
-  }
-} else {
-  // Redirigir a una página de acceso no autorizado si no se puede obtener el rol
-  header("Location: acceso-no-autorizado.php");
-  exit();
-}
-?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -55,18 +15,6 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
   <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
-  <style>
-        <?php
-            // Lógica para ocultar elementos del menú según el rol
-            if ($idRol == 1) {
-                // Usuario de rol 1
-                echo '.nav-item-rol1 { display: none; }';
-            } elseif ($idRol == 2) {
-                // Usuario de rol 2
-                echo '.nav-item-rol2 { display: none; }';
-            }
-            ?>
-    </style>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -120,14 +68,14 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Inicio -->
     <li class="nav-item">
-      <a href="inicio.php" class="nav-link">
+      <a href="inicio.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Inicio</p>
       </a>
     </li>
 
     <li class="nav-item nav-item-rol2">
-      <a href="generarReporte.php" class="nav-link">
+      <a href="generarReporte.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Generar Reporte</p>
         <i class="right fas fa-angle-left"></i>
@@ -136,7 +84,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Mis Reportes -->
     <li class="nav-item nav-item-rol1">
-      <a href="sistema.php" class="nav-link">
+      <a href="sistema.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Mis Reportes</p>
         <i class="right fas fa-angle-left"></i>
@@ -145,7 +93,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Técnico -->
     <li class="nav-item nav-item-rol1">
-      <a href="administrador.php" class="nav-link">
+      <a href="administrador.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Técnico</p>
         <i class="right fas fa-angle-left"></i>
@@ -154,7 +102,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Lista de Usuarios -->
     <li class="nav-item nav-item-rol2 nav-item-rol1">
-      <a href="usuarios.php" class="nav-link">
+      <a href="usuarios.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Lista de Usuarios</p>
         <i class="right fas fa-angle-left"></i>
@@ -163,7 +111,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Crear Usuarios -->
     <li class="nav-item nav-item-rol2 nav-item-rol1">
-      <a href="agregaUsuarios.php" class="nav-link">
+      <a href="agregaUsuarios.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Crear Usuarios</p>
         <i class="right fas fa-angle-left"></i>
@@ -172,7 +120,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Calendario -->
     <li class="nav-item">
-      <a href="calendario.php" class="nav-link">
+      <a href="calendario.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Eventos</p>
         <i class="right fas fa-angle-left"></i>
@@ -181,7 +129,7 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
 
     <!-- Enlace Cerrar Sesión -->
     <li class="nav-item">
-      <a href="cerrar_sesion.php" class="nav-link">
+      <a href="cerrar_sesion.html" class="nav-link">
         <i class=" fas fa-tachometer-alt"></i>
         <p>Cerrar sesión</p>
         <i class="right fas fa-angle-left"></i>
@@ -233,25 +181,6 @@ if ($resultRol && $rowRol = $resultRol->fetch_assoc()) {
                     <th>Acciones</th>
                   </tr>
                   </thead>
-                  <tbody>
-                  <?php
-                    // Verificar si la consulta de usuarios fue exitosa
-                    if ($resultUsuarios && $resultUsuarios->num_rows > 0) {
-                      while ($rowUsuario = $resultUsuarios->fetch_assoc()) {
-                        echo "<tr>";
-                        echo '<td>' . $rowUsuario['idUsuario'] . '</td>'; // Cambiado de 'id' a 'idUsuario'
-                        echo '<td>' . $rowUsuario['nombre'] . '</td>';
-                        echo '<td>' . $rowUsuario['apellidos'] . '</td>';
-                        echo '<td>' . $rowUsuario['contrasena'] . '</td>';
-                        echo '<td>' . $rowUsuario['correo'] . '</td>';
-                        echo '<td><button class="btn btn-danger btn-eliminar" data-id="' . $rowUsuario['idUsuario'] . '">Eliminar</button></td>';
-                        echo "</tr>";
-                      }
-                    } else {
-                      echo "<tr><td colspan='6'>No se encontraron usuarios.</td></tr>";
-                    }
-                  ?>
-                  </tbody>
                   <tfoot>
                   <tr>
                   <tr>
@@ -341,7 +270,7 @@ $(function () {
         if (confirmar) {
             // Realizar la eliminación mediante una solicitud AJAX
             $.ajax({
-                url: "eliminar_usuario.php",
+                url: "eliminar_usuario.html",
                 method: "POST",
                 data: { idUsuario: idUsuario },
                 dataType: 'json', // Esperar respuesta en formato JSON
